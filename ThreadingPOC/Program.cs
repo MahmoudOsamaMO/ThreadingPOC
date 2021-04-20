@@ -38,6 +38,9 @@ namespace ThreadingPOC
 
 
             // PassingDataBetweenThreads();
+
+
+            ParallelInvoke();
         }
 
 
@@ -447,7 +450,6 @@ namespace ThreadingPOC
         }
         #endregion
 
-
         #region Passing Data 
 
         static void PassingDataBetweenThreads()
@@ -472,6 +474,36 @@ namespace ThreadingPOC
 
             Console.ReadKey();
         }
+        #endregion
+
+        #region Parallel Invoke
+        static void ParallelInvoke()
+        {
+            try
+            {
+                Parallel.Invoke(
+                    BasicAction,	
+                    () =>			
+                    {
+                        Console.WriteLine("Method=Two, Thread={0}", Thread.CurrentThread.ManagedThreadId);
+                    },
+                    delegate ()		
+                    {
+                        Console.WriteLine("Method=Three, Thread={0}", Thread.CurrentThread.ManagedThreadId);
+                    }
+                );
+            }
+
+            catch (AggregateException e)
+            {
+                Console.WriteLine("An action has thrown an exception. THIS WAS UNEXPECTED.\n{0}", e.InnerException.ToString());
+            }
+        }
+        static void BasicAction()
+        {
+            Console.WriteLine("Method=One, Thread={0}", Thread.CurrentThread.ManagedThreadId);
+        }
+
         #endregion
     }
 }
