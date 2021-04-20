@@ -34,7 +34,10 @@ namespace ThreadingPOC
 
             //  ThreadPoolFebanci();      ////  Thread pool thread  QueueUserWorkItem ( WaitCallback, Object)
 
-             // DataFlowReadWrite();   /// we should use here static async Task Main()  
+            // DataFlowReadWrite();   /// we should use here static async Task Main()  
+
+
+            // PassingDataBetweenThreads();
         }
 
 
@@ -441,6 +444,33 @@ namespace ThreadingPOC
             {
                 Console.WriteLine(await bufferBlock.ReceiveAsync());
             }
+        }
+        #endregion
+
+
+        #region Passing Data 
+
+        static void PassingDataBetweenThreads()
+        {
+            // Create a thread with a ParemeterizedThreadStart  
+            Print p = new Print();
+            Thread workerThread = new Thread(p.PrintJob);
+            // Start thread with a parameter  
+            workerThread.Start("Some data in PrintJob ");
+
+            // Pass a class object to a worker thread  
+            Person mohammed = new Person("Mohamed Hass", 40, "Male");
+            Thread workerThread2 = new Thread(p.PrintPerson);
+            workerThread2.Start(mohammed);
+
+            // Main thread  
+            for (int i = 0; i < 10; i++)
+            {
+                Console.WriteLine($"Main thread: {i}");
+                Thread.Sleep(200);
+            }
+
+            Console.ReadKey();
         }
         #endregion
     }
